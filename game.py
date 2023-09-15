@@ -8,9 +8,10 @@ pygame.init()
 vec = pygame.math.Vector2
 
 #game vars
-HEIGHT    = 900
-WIDTH     = 1600
-FPS       = 60
+HEIGHT = 900
+WIDTH  = 1600
+FPS    = 60
+FONT   = pygame.font.SysFont('Congenial', 30)
 
 #set up fps
 FramePerSec = pygame.time.Clock()
@@ -18,6 +19,28 @@ FramePerSec = pygame.time.Clock()
 #set up window
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game")
+
+#ui
+elements = []
+
+class panel(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int, w: int, h: int, color: tuple, label: str, label_pos: tuple):
+        super().__init__()
+        self.pos   = (x, y)
+        self.surf  = pygame.Surface((w, h))
+        self.surf.fill(color)
+        self.rect  = self.surf.get_rect(center = (x + w/2, y + h/2))
+        self.label = FONT.render(label, True, (0, 0, 0))
+        self.surf.blit(self.label, label_pos)
+        elements.append(self)
+
+#incremental panel
+inc_panel = panel(0, 0, 400, 900, (150, 150, 150), 'Businesses', (50, 50))
+
+#draw ui elements
+def draw_ui():
+    for element in elements:
+        displaysurface.blit(element.surf, element.rect)
 
 #game loop
 while True:
@@ -28,7 +51,10 @@ while True:
             sys.exit()
 
     #update screen
-    displaysurface.fill((0,0,0))
+    #bg
+    displaysurface.fill((230, 230, 230))
+    #elements
+    draw_ui()
 
     pygame.display.update()
     FramePerSec.tick(FPS)
