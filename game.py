@@ -5,13 +5,18 @@ import sys
 
 #init 2d game
 pygame.init()
-vec = pygame.math.Vector2
 
 #game vars
 HEIGHT = 900
 WIDTH  = 1600
 FPS    = 60
-FONT   = pygame.font.SysFont('Congenial', 30)
+FONT   = pygame.font.SysFont('Congenial', 50)
+
+#business vars
+
+#player vars
+MONEY        = 100
+STOCK_QUANTS = [0,0,0,0,0]
 
 #set up fps
 FramePerSec = pygame.time.Clock()
@@ -35,7 +40,8 @@ class panel(pygame.sprite.Sprite):
         elements.append(self)
 
 #incremental panel
-inc_panel = panel(0, 0, 400, 900, (150, 150, 150), 'Businesses', (50, 50))
+inc_panel   = panel(0          , 0           , 400, 900, (150, 150, 150), 'Businesses'    , (50, 50))
+event_panel = panel(WIDTH - 400, HEIGHT - 200, 400, 200, (100, 100, 100), 'Current Event:', (25, 25)) 
 
 #draw ui elements
 def draw_ui():
