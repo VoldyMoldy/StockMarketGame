@@ -56,16 +56,21 @@ events = []
 
 class event():
     def __init__(self, targets: list, name: str, desc: str, duration: int):
-        self.target = targets   #types of stock to target
-        self.name   = name      #name of event to be displayed
-        self.desc   = desc      #description to be displayed
-        self.dur    = duration  #in seconds, how long the event lasts
+        self.targets = targets   #types of stock to target
+        self.name    = name      #name of event to be displayed
+        self.desc    = desc      #description to be displayed
+        self.dur     = duration  #in seconds, how long the event lasts
 
     def trigger(self, old_inc: int, new_inc: int, old_chng: int, new_chng: int, start_time: int):
-        self.old_inc  = old_inc  #save original stock incrememnt chance to reset after event
-        self.new_inc  = new_inc  #new chance to increment up
-        self.old_chng = old_chng #save old increment amount to reset after event
-        self.new_chng = new_chng #new increment amount
+        self.old_inc  = 0          #save original stock incrememnt chance to reset after event
+        self.new_inc  = new_inc    #new chance to increment up
+        self.old_chng = 0          #save old increment amount to reset after event
+        self.new_chng = new_chng   #new increment amount
+        self.start    = start_time #save start time of event to keep track of duration
+        for stock in stocks:       #iterate through all stocks to find targets, save off their original stats and replace them for the event
+            if stock.type in self.targets:
+                self.old_inc  = stock.inc_chance; stock.inc_chance = self.new_inc
+                self.old_chng = stock.chng_amt;   stock.chng_amt   = self.new_chng
 
 #ui
 elements = []
@@ -76,6 +81,7 @@ class panel(pygame.sprite.Sprite):
         self.pos   = (x, y)                                          #position of top left corner of panel on screen, starts in top left
         self.surf  = pygame.Surface((w, h))                          #creates surface to be drawn to of width w and height h
         self.surf.fill(color)                                        #fills in surface with color
+        self.rect  = self.surf.get_rect(center = (x + w/2, y + h/2)) #rect to draw to on game loop
         self.label = FONT.render(label, True, (0, 0, 0))             #creates label for the panel
         self.surf.blit(self.label, label_pos)                        #applies label to panel
         elements.append(self)
