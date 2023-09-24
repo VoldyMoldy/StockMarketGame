@@ -7,12 +7,17 @@ import random as r
 #init 2d game
 pygame.init()
 
-#game vars
+#window vars
 HEIGHT = 900
 WIDTH  = 1600
 FPS    = 60
+
+#text setup
 FONT   = pygame.font.SysFont('Congenial', 50)
-TICK   = 0
+
+#time related vars
+TICK   = 0 #1/FPS of a second, used to determine a second
+TIME   = 0 #seconds since start
 
 #business vars
 
@@ -31,12 +36,11 @@ pygame.display.set_caption("Game")
 stocks = []
 
 class stock():
-    def __init__(self, name: str, init_val: int, inc_chance: int, chng_amt: int):
-        super.__init__()
-        self.type       = name
-        self.val        = init_val
-        self.inc_chance = inc_chance
-        self.chng_amt   = chng_amt
+    def __init__(self, name: str, init_val: int, chng_amt: int):
+        self.type       = name       #name of stock
+        self.val        = init_val   #initial value 
+        self.inc_chance = 50         #chance of incrementing positively (edited by events)
+        self.chng_amt   = chng_amt   #maximum amount to change by either up or down (also edited by events)
         stocks.append(self)
 
     def update(self):
@@ -45,7 +49,23 @@ class stock():
         else:
             self.val -= r.randint(0, self.chng_amt)
 
-forest_stock = stock('Forest', 10, 50, 1)
+forest_stock = stock('GameStop', 10, 1)
+
+#events
+events = []
+
+class event():
+    def __init__(self, targets: list, name: str, desc: str, duration: int):
+        self.target = targets   #types of stock to target
+        self.name   = name      #name of event to be displayed
+        self.desc   = desc      #description to be displayed
+        self.dur    = duration  #in seconds, how long the event lasts
+
+    def trigger(self, old_inc: int, new_inc: int, old_chng: int, new_chng: int, start_time: int):
+        self.old_inc  = old_inc  #save original stock incrememnt chance to reset after event
+        self.new_inc  = new_inc  #new chance to increment up
+        self.old_chng = old_chng #save old increment amount to reset after event
+        self.new_chng = new_chng #new increment amount
 
 #ui
 elements = []
@@ -53,12 +73,11 @@ elements = []
 class panel(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, w: int, h: int, color: tuple, label: str, label_pos: tuple):
         super().__init__()
-        self.pos   = (x, y)
-        self.surf  = pygame.Surface((w, h))
-        self.surf.fill(color)
-        self.rect  = self.surf.get_rect(center = (x + w/2, y + h/2))
-        self.label = FONT.render(label, True, (0, 0, 0))
-        self.surf.blit(self.label, label_pos)
+        self.pos   = (x, y)                                          #position of top left corner of panel on screen, starts in top left
+        self.surf  = pygame.Surface((w, h))                          #creates surface to be drawn to of width w and height h
+        self.surf.fill(color)                                        #fills in surface with color
+        self.label = FONT.render(label, True, (0, 0, 0))             #creates label for the panel
+        self.surf.blit(self.label, label_pos)                        #applies label to panel
         elements.append(self)
 
 inc_panel   = panel(0          , 0           , 400, 900, (150, 150, 150), 'Businesses'    , (50, 50))
