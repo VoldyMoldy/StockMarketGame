@@ -77,6 +77,7 @@ class event():
         self.dur      = duration #in seconds, how long the event lasts
         self.new_inc  = new_inc  #new chance to increment up
         self.new_chng = new_chng #new increment amount
+        events.append(self)
 
     def trigger(self, start_time: int):
         self.start    = start_time #save start time of event to keep track of duration
@@ -93,8 +94,8 @@ class event():
                     stock.reset()
             current_event = None
 
-wallstreet_bets = event(['Gamestop'], 'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'          , 30, .5, 80)
-controversy     = event(['Gamestop'], 'Controversial Decision!'       , 'Way to lose your customers to greed', 40, .3, 20)
+wallstreet_bets = event(['Gamestop'], 'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'  , 30, .5, 80)
+controversy     = event(['Gamestop'], 'Controversial Decision!'       , 'Way to lose your customers!', 40, .3, 20)
 
 #ui
 elements = []
@@ -128,10 +129,6 @@ event_desc_panel = panel(WIDTH - 400, HEIGHT -  67, 400, 67 , (100, 100, 100), '
 #stock panels
 gamestop_name_panel = panel(400, 0          , 800, HEIGHT / 10, (230, 230, 230), 'GameStop: $' + str(gamestop_stock.val), (25, 25))
 gamestop_info_panel = panel(400, HEIGHT / 10, 800, HEIGHT / 5 , (230, 230, 230), 'You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + str(STOCK_QUANTS[0] * gamestop_stock.val), (25, 25))
-
-#event panel label debug
-current_event = wallstreet_bets
-current_event.start = 0
 
 #hardcoded for now, maybe automate later
 def update_panel_labels():
@@ -168,7 +165,7 @@ while True:
         if current_event != None:
             current_event.check_end()
     #run event every minute except for the first
-    if TIME != 0 and TIME % 60 == 0:
+    if TICK % FPS == 0 and TIME % 60 == 0:
         current_event = events[r.randint(0, len(events) - 1)]
         current_event.trigger(TIME)
     #update screen
