@@ -11,6 +11,7 @@ pygame.init()
 HEIGHT = 900
 WIDTH  = 1600
 FPS    = 60
+MOUSE_X, MOUSE_Y  = pygame.mouse.get_pos() #for finding if mouse position
 
 #text setup
 FONT   = pygame.font.SysFont('Congenial', 35)
@@ -23,7 +24,7 @@ TIME   = 0 #seconds since start
 
 #player vars
 MONEY        = 100
-STOCK_QUANTS = [10,10,10,10,10]
+STOCK_QUANTS = [0,0,0,0,0]
 
 #set up fps
 FramePerSec = pygame.time.Clock()
@@ -141,6 +142,71 @@ apple_info_panel = panel(400, 7 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230)
 google_name_panel = panel(400, 4 * HEIGHT / 5 , 800, HEIGHT / 10, (230, 230, 230), 'Google: $' + str(gamestop_stock.val), (25, 25))
 google_info_panel = panel(400, 9 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[4]) + ' stocks for a total of $' + str(STOCK_QUANTS[4] * google_stock.val), (25, 25))
 
+#ui buttons
+buttons = []
+
+#base button class
+class button(panel):
+    def __init__(self, x: int, y: int, w: int, h: int, color: tuple, label: str, label_pos: tuple):
+        super().__init__(x, y, w, h, color, label, label_pos)
+        buttons.append(self)
+
+    def check_mouse(self): #mouse related actions
+        if self.rect.collidepoint(MOUSE_X, MOUSE_Y): #if mouse is inside buttom
+            self.surf.fill((self.color[0] - 50, self.color[1] - 50, self.color[2] - 50)) #darken button background while hovering over
+        else:
+            self.surf.fill(self.color) #restore original button background when not hovered on
+        self.surf.blit(self.label, self.label_pos) #redraw text
+
+    def on_click(self):
+        pass
+
+#stock buttons for selling and buying
+class stock_buy_button(button):
+    def __init__(self, x: int, y: int, w: int, h: int, color: tuple, stock_id: int):
+        super().__init__(x, y, w, h, color, 'BUY', (75, 50))
+        self.id = stock_id
+
+    def on_click(self):
+        if self.rect.collidepoint(MOUSE_X, MOUSE_Y) and pygame.mouse.get_pressed()[0]:
+            self.surf.fill((self.color[0] - 75, self.color[1] - 75, self.color[2] - 75)) #darken button background further while clicked on
+            if MONEY > stocks[self.id].val:
+                MONEY = MONEY - stocks[self.id].val
+                STOCK_QUANTS[self.id] = STOCK_QUANTS[self.id] + 1
+        else:
+            self.surf.fill(self.color) #restore original button background when not hovered on
+        self.surf.blit(self.label, self.label_pos) #redraw text
+
+class stock_sell_button(button):
+    def __init__(self, x: int, y: int, w: int, h: int, color: tuple, stock_id: int):
+        super().__init__(x, y, w, h, color, 'SELL', (75, 50))
+        self.id = stock_id
+
+    def on_click(self):
+        if self.rect.collidepoint(MOUSE_X, MOUSE_Y) and pygame.mouse.get_pressed()[0]:
+            self.surf.fill((self.color[0] - 75, self.color[1] - 75, self.color[2] - 75)) #darken button background further while clicked on
+            if STOCK_QUANTS[self.id] > 0:
+                MONEY = MONEY + stocks[self.id].val
+                STOCK_QUANTS[self.id] = STOCK_QUANTS[self.id] - 1
+        else:
+            self.surf.fill(self.color) #restore original button background when not hovered on
+        self.surf.blit(self.label, self.label_pos) #redraw text
+
+gamestop_buy_button  =  stock_buy_button(1000, 0          , 200, HEIGHT / 10, (200, 200, 200), 0)
+gamestop_sell_button = stock_sell_button(1000, HEIGHT / 10, 200, HEIGHT / 10, (200, 200, 200), 0)
+
+gamestop_buy_button  =  stock_buy_button(1000, HEIGHT / 5 , 200, HEIGHT / 10, (200, 200, 200), 0)
+gamestop_sell_button = stock_sell_button(1000, 3 * HEIGHT / 10, 200, HEIGHT / 10, (200, 200, 200), 0)
+
+gamestop_buy_button  =  stock_buy_button(1000, 2 * HEIGHT / 5 , 200, HEIGHT / 10, (200, 200, 200), 0)
+gamestop_sell_button = stock_sell_button(1000, 5 * HEIGHT / 10, 200, HEIGHT / 10, (200, 200, 200), 0)
+
+gamestop_buy_button  =  stock_buy_button(1000, 3 * HEIGHT / 5 , 200, HEIGHT / 10, (200, 200, 200), 0)
+gamestop_sell_button = stock_sell_button(1000, 7 * HEIGHT / 10, 200, HEIGHT / 10, (200, 200, 200), 0)
+
+gamestop_buy_button  =  stock_buy_button(1000, 4 * HEIGHT / 5 , 200, HEIGHT / 10, (200, 200, 200), 0)
+gamestop_sell_button = stock_sell_button(1000, 9 * HEIGHT / 10, 200, HEIGHT / 10, (200, 200, 200), 0)
+
 #hardcoded for now, maybe automate later
 def update_panel_labels():
     gamestop_name_panel.update_label('GameStop: $' + ("%.2f" % gamestop_stock.val))
@@ -164,6 +230,12 @@ def update_panel_labels():
     else:
         event_name_panel.update_label('')
         event_desc_panel.update_label('')
+
+#updating button colors
+def update_buttons():
+    for button in buttons:
+        button.check_mouse()
+        button.on_click()
 
 #draw ui elements
 def draw_ui():
@@ -196,6 +268,7 @@ while True:
     displaysurface.fill((230, 230, 230))
     #elements
     update_panel_labels()
+    update_buttons()
     draw_ui()
 
     pygame.display.update()
