@@ -231,8 +231,8 @@ def update_panel_labels():
         event_name_panel.update_label('')
         event_desc_panel.update_label('')
 
-#updating button colors
-def update_buttons():
+#button functions
+def update_buttons(): #these do not currently work, needs fixed
     for button in buttons:
         button.check_mouse()
         button.on_click()
