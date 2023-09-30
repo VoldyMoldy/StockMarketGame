@@ -23,7 +23,7 @@ TIME   = 0 #seconds since start
 
 #player vars
 MONEY        = 100
-STOCK_QUANTS = [0,0,0,0,0]
+STOCK_QUANTS = [10,10,10,10,10]
 
 #set up fps
 FramePerSec = pygame.time.Clock()
@@ -58,8 +58,7 @@ class stock():
 
 gamestop_stock = stock('GameStop', 10, 0.2)
 startup_stock  = stock('Random Startup Company', 35, 0.7) #need to change name
-twitter_stock  = stock('X (formerly Twitter)', 75, 3)     #can change any of these next 3 to whatever if wanted, just have them be in ascending value
-twitter_stock.inc_chance = 45 #stock is not doing so hot
+twitter_stock  = stock('X', 75, 3) #can change any of these next 3 to whatever if wanted, just have them be in ascending value
 apple_stock    = stock('Apple', 150, 7.5)
 apple_stock.inc_chance = 55 #is doing good
 google_stock   = stock('Google', 500, 60)
@@ -94,8 +93,8 @@ class event():
                     stock.reset()
             current_event = None
 
-wallstreet_bets = event(['Gamestop'], 'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'  , 30, .5, 80)
-controversy     = event(['Gamestop'], 'Controversial Decision!'       , 'Way to lose your customers!', 40, .3, 20)
+wallstreet_bets = event(['GameStop'], 'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'  , 30, 80, .5)
+controversy     = event(['GameStop'], 'Controversial Decision!'       , 'Way to lose your customers!', 40, 20, .3)
 
 #ui
 elements = []
@@ -123,17 +122,41 @@ inc_panel        = panel(0          , 0           , 400, 900, (150, 150, 150), '
 
 #event panels
 event_panel      = panel(WIDTH - 400, HEIGHT - 200, 400, 200, (100, 100, 100), 'Current Event:', (25, 25))
-event_name_panel = panel(WIDTH - 400, HEIGHT - 133, 400, 133, (100, 100, 100), '',               (25, 25)) #label not working
-event_desc_panel = panel(WIDTH - 400, HEIGHT -  67, 400, 67 , (100, 100, 100), '',               (25, 25)) #label not working
+event_name_panel = panel(WIDTH - 400, HEIGHT - 133, 400, 133, (100, 100, 100), '',               (25, 25))
+event_desc_panel = panel(WIDTH - 400, HEIGHT -  67, 400, 67 , (100, 100, 100), '',               (25, 25))
 
 #stock panels
 gamestop_name_panel = panel(400, 0          , 800, HEIGHT / 10, (230, 230, 230), 'GameStop: $' + str(gamestop_stock.val), (25, 25))
-gamestop_info_panel = panel(400, HEIGHT / 10, 800, HEIGHT / 5 , (230, 230, 230), 'You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + str(STOCK_QUANTS[0] * gamestop_stock.val), (25, 25))
+gamestop_info_panel = panel(400, HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + str(STOCK_QUANTS[0] * gamestop_stock.val), (25, 25))
+
+startup_name_panel = panel(400,     HEIGHT / 5 , 800, HEIGHT / 10, (230, 230, 230), 'Random Startup Company: $' + str(startup_stock.val), (25, 25))
+startup_info_panel = panel(400, 3 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[1]) + ' stocks for a total of $' + str(STOCK_QUANTS[1] * startup_stock.val), (25, 25))
+
+x_name_panel = panel(400, 2 * HEIGHT / 5 , 800, HEIGHT / 10, (230, 230, 230), 'X: $' + str(gamestop_stock.val), (25, 25))
+x_info_panel = panel(400, 5 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[2]) + ' stocks for a total of $' + str(STOCK_QUANTS[2] * twitter_stock.val), (25, 25))
+
+apple_name_panel = panel(400, 3 * HEIGHT / 5 , 800, HEIGHT / 10, (230, 230, 230), 'Apple: $' + str(gamestop_stock.val), (25, 25))
+apple_info_panel = panel(400, 7 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[3]) + ' stocks for a total of $' + str(STOCK_QUANTS[3] * apple_stock.val), (25, 25))
+
+google_name_panel = panel(400, 4 * HEIGHT / 5 , 800, HEIGHT / 10, (230, 230, 230), 'Google: $' + str(gamestop_stock.val), (25, 25))
+google_info_panel = panel(400, 9 * HEIGHT / 10, 800, HEIGHT / 10, (230, 230, 230), 'You have ' + str(STOCK_QUANTS[4]) + ' stocks for a total of $' + str(STOCK_QUANTS[4] * google_stock.val), (25, 25))
 
 #hardcoded for now, maybe automate later
 def update_panel_labels():
     gamestop_name_panel.update_label('GameStop: $' + ("%.2f" % gamestop_stock.val))
     gamestop_info_panel.update_label('You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + ("%.2f" % (STOCK_QUANTS[0] * gamestop_stock.val)))
+
+    startup_name_panel.update_label('Random Startup Company: $' + ("%.2f" % startup_stock.val))
+    startup_info_panel.update_label('You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + ("%.2f" % (STOCK_QUANTS[0] * startup_stock.val)))
+
+    x_name_panel.update_label('X: $' + ("%.2f" % twitter_stock.val))
+    x_info_panel.update_label('You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + ("%.2f" % (STOCK_QUANTS[0] * twitter_stock.val)))
+
+    apple_name_panel.update_label('Apple: $' + ("%.2f" % apple_stock.val))
+    apple_info_panel.update_label('You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + ("%.2f" % (STOCK_QUANTS[0] * apple_stock.val)))
+
+    google_name_panel.update_label('Google: $' + ("%.2f" % google_stock.val))
+    google_info_panel.update_label('You have ' + str(STOCK_QUANTS[0]) + ' stocks for a total of $' + ("%.2f" % (STOCK_QUANTS[0] * google_stock.val)))
     
     if current_event != None:
         event_name_panel.update_label(current_event.name)
@@ -165,7 +188,7 @@ while True:
         if current_event != None:
             current_event.check_end()
     #run event every minute except for the first
-    if TICK % FPS == 0 and TIME % 60 == 0:
+    if TICK % FPS == 0 and TIME % 60 == 0 and TIME != 0:
         current_event = events[r.randint(0, len(events) - 1)]
         current_event.trigger(TIME)
     #update screen
@@ -174,9 +197,6 @@ while True:
     #elements
     update_panel_labels()
     draw_ui()
-
-    #stock debugging
-    print(str(gamestop_stock.val) + ' ' + str(STOCK_QUANTS[0]) + ' ' + str(gamestop_stock.inc_chance))
 
     pygame.display.update()
     FramePerSec.tick(FPS)
