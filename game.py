@@ -11,7 +11,7 @@ pygame.init()
 HEIGHT    = 900
 WIDTH     = 1600
 FPS       = 60
-MOUSE_POS = pygame.mouse.get_pos() #for finding if mouse position
+MOUSE_POS = pygame.mouse.get_pos() #for finding mouse position
 
 #text setup
 FONT   = pygame.font.SysFont('Congenial', 35)
@@ -94,8 +94,15 @@ class event():
                     stock.reset()
             current_event = None
 
-wallstreet_bets = event(['GameStop'], 'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'  , 30, 80, .5)
-controversy     = event(['GameStop'], 'Controversial Decision!'       , 'Way to lose your customers!', 40, 20, .3)
+wallstreet_bets = event(['GameStop'],               'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'      , 30, 80, .5 )
+controversy     = event(['GameStop'],               'Controversial Decision!'       , 'Way to lose your customers!'    , 40, 20, .3 )
+funded          = event(['Random Startup Company'], 'Funded Product!'               , 'Thanks investors!'              , 20, 90,  1 )
+flopped         = event(['Random Startup Company'], 'Not One of the Greats...'      , 'There\'s always next time.'     , 10, 10,  1 )
+clickbait       = event(['X']                     , 'Controversial Post!'           , 'More clicks for more money!'    , 20, 75,  5 )
+rebranding      = event(['X']                     , 'Rebranding?'                   , 'Smooth move, CEO'               , 60, 15,  4 )
+new_phone       = event(['Apple']                 , 'New Phone!'                    , 'Totally new features!'          , 45, 80, 15 )
+security_breach = event(['Apple']                 , 'Security Breach!'              , 'Sounds like a hotfix is coming!', 40, 20, 10 )
+controversy     = event(['Google']                , 'More Ads!'                     , 'Time to buy YT Premium!'        , 30, 20, 75 )
 
 #ui
 elements = []
