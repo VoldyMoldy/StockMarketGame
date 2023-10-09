@@ -31,7 +31,7 @@ FramePerSec = pygame.time.Clock()
 
 #set up window
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Game")
+pygame.display.set_caption("StockSim")
 
 #stocks
 stocks = []
@@ -57,10 +57,10 @@ class stock():
         self.inc_chance = 50
         self.chng_amt   = self.reset_chng_amt
 
-gamestop_stock = stock('GameStop', 10, 0.2)
-startup_stock  = stock('Random Startup Company', 35, 0.7) #need to change name
-twitter_stock  = stock('X', 75, 3) #can change any of these next 3 to whatever if wanted, just have them be in ascending value
-apple_stock    = stock('Apple', 150, 7.5)
+gamestop_stock = stock('GameStop', 10, 0.3)
+startup_stock  = stock('Random Startup Company', 35, 1.5) #need to change name
+twitter_stock  = stock('X', 75, 5) #can change any of these next 3 to whatever if wanted, just have them be in ascending value
+apple_stock    = stock('Apple', 150, 15)
 apple_stock.inc_chance = 55 #is doing good
 google_stock   = stock('Google', 500, 60)
 google_stock.inc_chance  = 60 #top value stock is doing very well
@@ -94,14 +94,14 @@ class event():
                     stock.reset()
             current_event = None
 
-wallstreet_bets = event(['GameStop'],               'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'      , 30, 80, .5 )
-controversy     = event(['GameStop'],               'Controversial Decision!'       , 'Way to lose your customers!'    , 40, 20, .3 )
-funded          = event(['Random Startup Company'], 'Funded Product!'               , 'Thanks investors!'              , 20, 90,  1 )
-flopped         = event(['Random Startup Company'], 'Not One of the Greats...'      , 'There\'s always next time.'     , 10, 10,  1 )
+wallstreet_bets = event(['GameStop'],               'Wallstreet Bets Strikes Again!', 'Of course its Gamestop...'      , 30, 80, .75)
+controversy     = event(['GameStop'],               'Controversial Decision!'       , 'Way to lose your customers!'    , 40, 20, .5 )
+funded          = event(['Random Startup Company'], 'Funded Product!'               , 'Thanks investors!'              , 20, 90,  3 )
+flopped         = event(['Random Startup Company'], 'Not One of the Greats...'      , 'There\'s always next time.'     , 10, 10,  3 )
 clickbait       = event(['X']                     , 'Controversial Post!'           , 'More clicks for more money!'    , 20, 75,  5 )
 rebranding      = event(['X']                     , 'Rebranding?'                   , 'Smooth move, CEO'               , 60, 15,  4 )
-new_phone       = event(['Apple']                 , 'New Phone!'                    , 'Totally new features!'          , 45, 80, 15 )
-security_breach = event(['Apple']                 , 'Security Breach!'              , 'Sounds like a hotfix is coming!', 40, 20, 10 )
+new_phone       = event(['Apple']                 , 'New Phone!'                    , 'Totally new features!'          , 45, 80, 30 )
+security_breach = event(['Apple']                 , 'Security Breach!'              , 'Sounds like a hotfix is coming!', 40, 20, 20 )
 controversy     = event(['Google']                , 'More Ads!'                     , 'Time to buy YT Premium!'        , 30, 20, 75 )
 
 #ui
