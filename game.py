@@ -128,9 +128,6 @@ class panel(pygame.sprite.Sprite):
         self.label = FONT.render(new_label, True, (0, 0, 0)) #recreate label with new text
         self.surf.blit(self.label, self.label_pos)           #draw text to surface
 
-#business panels
-# inc_panel        = panel(0          , 0           , 400, 900, (150, 150, 150), 'Businesses'    , (50, 50))
-
 #event panels
 event_panel      = panel(WIDTH - 400, HEIGHT - 200, 400, 200, (100, 100, 100), 'Current Event:', (25, 25))
 event_name_panel = panel(WIDTH - 400, HEIGHT - 133, 400, 133, (100, 100, 100), '',               (25, 25))
@@ -258,7 +255,7 @@ def update_panel_labels():
         event_desc_panel.update_label('')
 
 #button functions
-def update_buttons(): #these do not currently work, needs fixed
+def update_buttons():
     for obj in buttons:
         obj.check_mouse()
         obj.on_click()
@@ -292,11 +289,10 @@ while True:
     if TICK % FPS == 0 and TIME % 60 == 0 and TIME != 0:
         current_event = events[r.randint(0, len(events) - 1)]
         current_event.trigger(TIME)
+
     #update screen
     #bg
     displaysurface.fill((230, 230, 230))
-
-    
 
     #elements
     update_panel_labels()
