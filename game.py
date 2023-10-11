@@ -43,6 +43,7 @@ class stock():
         self.inc_chance     = 50         #chance of incrementing positively (edited by events)
         self.chng_amt       = chng_amt   #maximum amount to change by either up or down (also edited by events)
         self.reset_chng_amt = chng_amt   #save increment value in case of events
+        self.history        = [init_val] #will store history of stock prices starting with the initial value
         stocks.append(self)
 
     def update(self):
@@ -52,6 +53,8 @@ class stock():
             self.val -= r.random() * self.chng_amt
         if self.val < 0:
             self.val = 0
+
+        self.history.append(self.val)  # add value to history
     
     def reset(self):
         self.inc_chance = 50
@@ -126,7 +129,7 @@ class panel(pygame.sprite.Sprite):
         self.surf.blit(self.label, self.label_pos)           #draw text to surface
 
 #business panels
-inc_panel        = panel(0          , 0           , 400, 900, (150, 150, 150), 'Businesses'    , (50, 50))
+# inc_panel        = panel(0          , 0           , 400, 900, (150, 150, 150), 'Businesses'    , (50, 50))
 
 #event panels
 event_panel      = panel(WIDTH - 400, HEIGHT - 200, 400, 200, (100, 100, 100), 'Current Event:', (25, 25))
@@ -292,10 +295,36 @@ while True:
     #update screen
     #bg
     displaysurface.fill((230, 230, 230))
+
+    
+
     #elements
     update_panel_labels()
     update_buttons()
     draw_ui()
+
+    #code for drawing the graph
+    graph_height = HEIGHT // len(stocks) # calculating height of each graph
+    for index, s in enumerate(stocks):
+        graph_surface = pygame.Surface((400, graph_height)) #graph surface, width 400 pixels(size of left panel originally business) and dynamic height 
+
+        num_prices = 150 # this determines the max number of price points that will be displayed on a graph.
+        graph_surface.fill((0, 0, 0))  # Fill with black color
+        recent_prices = s.history[-num_prices:] #takes the 150 most recent prices
+        max_price = max(s.history) # takes the highest price, this will set where the highest point of the graph is. I should probably see if i need to change this to only look at the max of the recent prices but it seems like it works
+        for i in range(1, len(recent_prices)):
+            # Calculate start and end points for line
+            start_pos = ((i-1) * (400 / num_prices), graph_height - (recent_prices[i-1] / max_price) * (graph_height-2)) #dynamically adjusts the graph so the lines do not go above. the -2 is to account for the border rect I put to separate graphs
+            end_pos = (i * (400 / num_prices), graph_height - (recent_prices[i] / max_price) *(graph_height-2))
+
+            pygame.draw.line(graph_surface, (0,255,0), start_pos, end_pos) # Draw line on the graph surface
+
+        border_rect = pygame.Rect(0,0,400,graph_height) #creates a border then draws it
+        pygame.draw.rect(graph_surface, (255,255,255), border_rect, 1)
+
+        graph_x = 0  
+        graph_y = index * graph_height  # Stacks graphs vertically
+        displaysurface.blit(graph_surface, (graph_x, graph_y)) #places graph on the display
 
     pygame.display.update()
     FramePerSec.tick(FPS)
